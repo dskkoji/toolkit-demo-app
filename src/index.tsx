@@ -1,10 +1,16 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
+// import { persistStore } from 'redux-persist'
+// import { PersistGate } from 'redux-persist/integration/react'
 import { store } from './app/store';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './index.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+
+
+// let persistor = persistStore(store)
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
@@ -12,7 +18,9 @@ const root = createRoot(container);
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <BrowserRouter >
+        <App />
+      </BrowserRouter>
     </Provider>
   </React.StrictMode>
 );

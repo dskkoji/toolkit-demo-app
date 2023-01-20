@@ -1,58 +1,55 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import React, { useEffect } from 'react'
 
-function App() {
+import { useRoutes } from 'react-router-dom'
+import { routes } from './routes'
+import styles from './App.module.scss'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from './app/store'
+import { useAppDispatch, useAppSelector } from './app/hooks' 
+import { onAuthStateChanged } from 'firebase/auth'
+import { useNavigate } from 'react-router-dom'
+import { RootState } from './app/store'
+import { fetchProducts } from './features/product/productSlice'
+import { fetchUsers, fetchProductsInCart } from './features/user/userSlice'
+import Layout from './Layout'
+import { auth } from './firebase/index'
+
+
+
+const App: React.FC = () => {
+  const navigate = useNavigate()
+  const dispatch: AppDispatch = useAppDispatch()
+  
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      !user && navigate('/user-auth')
+    })
+  }, [])
+
+  useEffect(() => {
+    const getData = () => {
+      dispatch(fetchUsers())
+    }
+    getData()
+    return () => getData()
+  }, [])
+
+
+//   return (
+//     <>
+//         <Header />
+//         <main className="c-main">
+//           {/* <ProductList /> */}
+//           <Router />
+//         </main> 
+//     </>
+//   )
+// }
+ const router = useRoutes(routes)
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
-  );
+    <>{router}</>
+  )
 }
 
-export default App;
+export default App
+ 
