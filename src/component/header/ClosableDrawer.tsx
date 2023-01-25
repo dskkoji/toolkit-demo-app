@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
 import List from '@mui/material/List'
@@ -37,42 +37,44 @@ type Props = {
 const theme = createTheme()
 
 const ClosableDrawer: React.FC<Props> = (props) => {
-  const [keyword, setKeyword] = useState('')
-  const [userId, setUserId] = useState<any>('')
   const navigate = useNavigate()
   const { register } = useForm()
   const dispatch = useAppDispatch()
- 
+  const [keyword, setKeyword] = useState('')
+  const [userId, setUserId] = useState<any>('')
+
   const selectMenu = (event: any, path: string) => {
     navigate(path)
     props.onClose(event, false)
   }
-
-  // const [filters, setFilters] = useState([
-  //   {func: selectMenu, label: '全て', id: 'all', value: '/'},
-  //   {func: selectMenu, label: 'メンズ', id: 'male', value: '/?gender=male'},
-  //   {func: selectMenu, label: 'レディス', id: 'female', value: '/?gender=female'}
-  // ])
+  
+  const [filters, setFilters] = useState([
+    { func: selectMenu, label: "すべて", id: "all", value: "/" },
+    { func: selectMenu, label: "メンズ", id: "male", value: "/?gender=male" },
+    { func: selectMenu, label: "レディス", id: "female", value: "/?gender=female" }
+  ])
 
   const menus = [
-    { func: selectMenu, label: "商品登録", icon: <AddCircleIcon />, id: "register", value: '/product/create' },
-    { func: selectMenu, label: "注文履歴", icon: <HistoryIcon />, id: "history", value: './order/history'  },
-    { func: selectMenu, label: "プロフィール", icon: <PersonIcon />, id: "profile", value: '/user/mypage' },
+    { func: selectMenu, label: "商品登録", icon: <AddCircleIcon /> , id: "register" , value: "/product/create" },
+    { func: selectMenu, label: "注文履歴", icon: <HistoryIcon />, id: "history", value: "/order/history" },
+    { func: selectMenu, label: "プロフィール", icon: <PersonIcon />, id: "profile", value: "/user/mypage" }
   ]
 
-  // useEffect(() => {
-  //   getDocs(query(
-  //     collection(db, 'categories'),
-  //     orderBy('order', ('asc'))
-  //   )).then((snapshots) => {
-  //     const list: any[] = []
-  //     snapshots.forEach(snapshot => {
-  //       const category = snapshot.data()
-  //       list.push({ func: selectMenu, label: category.name, id: category.id, value: `/?category=${category.id}`})
-  //       })
-  //       setFilters(prevState => [...prevState, ...list])
-  //     })
-  // }, [])
+  useEffect(() => {
+    const unsub = () => {
+      const q = query(collection(db, 'categories'), orderBy('order', 'asc'))
+      const list: any[] = []
+      getDocs(q)
+        .then((snapshots) => {
+          snapshots.forEach((snapshot) => {
+            const category = snapshot.data()
+            list.push({ func: selectMenu, label: category.name, id: category.id, value: `/?category=${category.id}` })
+          })
+          setFilters((prevState) => [...prevState, ...list])
+        })
+    }
+    return() => unsub()
+  }, [])
 
   const logOut = async () => {
     try {
@@ -91,7 +93,7 @@ const ClosableDrawer: React.FC<Props> = (props) => {
     }
   }
 
-  return (
+   return (
    <ThemeProvider theme={theme}>
     <Box
       component="nav"
@@ -128,7 +130,7 @@ const ClosableDrawer: React.FC<Props> = (props) => {
                 required: false
               })}
               value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
+              onChange={(e: any) => setKeyword(e.target.value)}
             />
             <IconButton>
               <SearchIcon />
@@ -149,10 +151,6 @@ const ClosableDrawer: React.FC<Props> = (props) => {
             <ListItem 
               // button 
               key="logout" 
-              // onClick={() => {
-              //   logOut()
-              //   navigate('/user-auth')
-              // }}
               onClick={() => logOut()}
             > 
               <ListItemIcon>
@@ -162,13 +160,17 @@ const ClosableDrawer: React.FC<Props> = (props) => {
             </ListItem>
           </List>
           <Divider />
-          {/* <List>
+          <List>
             {filters.map(filter => (
-              <ListItem button key={filter.id} onClick={(e) => filter.func(e, filter.value)}>
-                <ListItemText primary={filter.label} />
+              <ListItem 
+                  button 
+                  key={filter.id}
+                  onClick={(e) => filter.func(e, filter.value) }
+                  >
+                <ListItemText primary={filter.label } />
               </ListItem>
             ))}
-          </List> */}
+          </List>
         {/* </div> */}
       </Drawer>
     </Box>

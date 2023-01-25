@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { collection, getDocs, query, orderBy, setDoc, doc, Timestamp, deleteDoc } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, setDoc, doc, Timestamp, deleteDoc, where } from 'firebase/firestore';
 import { db } from '../../firebase/index'
 import { AppThunk, RootState } from '../../app/store'
 import { createSelector } from 'reselect'
@@ -46,14 +46,18 @@ const initialState: ProductState = {
    },
 }
 
-export const fetchProducts = createAsyncThunk('product/getAllProducts', async () => {
-  const res = await getDocs(
-    query(
-      collection(db, 'products'),
-      orderBy('created_at', 'desc')
+export const fetchProducts = createAsyncThunk('product/getAllProducts', async (qp: string) => {
+  const gender = /^\?gender=/.test(qp) ? qp.split('?gender=')[1] : ''
+  const category = /^\?category=/.test(qp) ? qp.split('?category=')[1] : ''
+  let q = query(
+    collection(db, 'products'), 
+    orderBy('created_at', 'desc'),
+    // where('category', '==', 'tops')
+    // where('gender', '==', `${gender}`)
     )
-  )
+  
 
+  const res = await getDocs(q)
   const allProducts = res.docs.map((doc) => ({
     productId: doc.id,
     productName: doc.data().productName,

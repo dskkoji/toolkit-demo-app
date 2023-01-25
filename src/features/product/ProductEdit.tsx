@@ -8,7 +8,7 @@ import SetSizeArea from '../../features/product/SetSizeArea'
 import { db } from '../../firebase/index'
 import { editProduct } from '../product/productSlice'
 import { useNavigate } from 'react-router-dom'
-import { doc, getDoc } from 'firebase/firestore'
+import { doc, getDoc, getDocs, collection, orderBy, query, onSnapshotsInSync } from 'firebase/firestore'
 
 type SubmitData = {
   productName: string;
@@ -31,6 +31,7 @@ const ProductEdit: React.FC = () => {
   const { register, handleSubmit, setValue } = useForm<SubmitData>()
   const [gender, setGender] = useState('')
   const [category, setCategory] = useState('')
+  const [categories, setCategories] = useState<any[]>([])
   const [images, setImages] = useState<any>([])
   const [sizes, setSizes] = useState<Size[]>([])
   // const [description, setDescription] = useState<string>('')
@@ -44,11 +45,21 @@ const ProductEdit: React.FC = () => {
     { id: 'female',  name: 'レディス' }
   ]
 
-  const categories = [
-    { id: 'shirts', name: 'シャツ' },
-    { id: 'pants', name: 'パンツ' }
-  ]
-
+  useEffect(() => {
+      const q = query(collection(db, 'categories'), orderBy('order', 'asc'))
+      getDocs(q)
+      .then((querySnapshot) => {
+          const list: any[] = []
+          querySnapshot.forEach((snapshot) => {
+              const data = snapshot.data()
+              list.push({
+                id: data.id,
+                name: data.name
+              })
+            })
+          setCategories(list)
+      })
+  }, [])
   
   const onSubmit = async (data: SubmitData) => {
     const sendData = {

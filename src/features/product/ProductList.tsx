@@ -23,20 +23,12 @@ const ProductList: React.FC = () => {
   const products: Products = useSelector((state: RootState) => state.product.products)
   const dispatch: AppDispatch = useDispatch()
 
-  // const query = window.location.search
-  // const gender = /^\?gender=/.test(query) ? query.split('?gender=')[1] : ""
-  // const category = /^\?category=/.test(query) ? query.split('?category=')[1] : "" 
-
-  // useEffect(() => {
-  //   dispatch(fetchProducts(gender, category))
-  // }, [query])
+  const q = window.location.search
+  
   useEffect(() => {
-    const getData = () => {
-      dispatch(fetchProducts())
-    }
-    getData()
-  }, [])
-
+    dispatch(fetchProducts(q))
+  }, [dispatch, q])
+  
   return (
     <section className="c-section-wrapin">
       <div className="p-grid__row">
