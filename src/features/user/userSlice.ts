@@ -64,7 +64,7 @@ export const fetchUsers = createAsyncThunk('user/getAllUsers', async () => {
 })
 
 
-export const selectSelectedUser = (state: RootState) => state.user.selectedUser
+// export const selectSelectedUser = (state: RootState) => state.user.selectedUser
 
 export const fetchOrderHistory = createAsyncThunk('user/getAllOrders', async (uid:string) => {
   const res = await getDocs(

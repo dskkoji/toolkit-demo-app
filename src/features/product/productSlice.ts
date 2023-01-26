@@ -30,6 +30,7 @@ interface ProductState {
   }
 }
 
+
 const initialState: ProductState = {
   idCount: 1,
   products: [],
@@ -46,16 +47,23 @@ const initialState: ProductState = {
    },
 }
 
-export const fetchProducts = createAsyncThunk('product/getAllProducts', async (qp: string) => {
-  const gender = /^\?gender=/.test(qp) ? qp.split('?gender=')[1] : ''
-  const category = /^\?category=/.test(qp) ? qp.split('?category=')[1] : ''
-  let q = query(
-    collection(db, 'products'), 
+export const fetchProducts = createAsyncThunk('product/getAllProducts', async (params: string | null) => {
+  const productsRef = collection(db, 'products')
+  let queryOption = [
     orderBy('created_at', 'desc'),
-    // where('category', '==', 'tops')
-    // where('gender', '==', `${gender}`)
-    )
+  ]
   
+  let keyword
+  if (params?.includes('gender')) {
+    keyword = params.split('?gender=')[1]
+    queryOption.push(where('gender', '==', keyword))
+  }
+  if (params?.includes('category')) {
+    keyword = params.split('?category=')[1]
+    queryOption.push(where('category', '==', keyword))
+  }
+
+  const q = query(productsRef, ...queryOption)
 
   const res = await getDocs(q)
   const allProducts = res.docs.map((doc) => ({

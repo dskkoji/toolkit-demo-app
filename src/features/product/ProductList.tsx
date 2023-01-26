@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux'
 import { fetchProducts } from '../../features/product/productSlice'
 import ProductCard from './ProductCard'
 import { AppDispatch } from '../../app/store'
+import { useSearchParams } from 'react-router-dom'
 
 type Products = {
   productId: string; 
@@ -22,13 +23,26 @@ type Products = {
 const ProductList: React.FC = () => {
   const products: Products = useSelector((state: RootState) => state.product.products)
   const dispatch: AppDispatch = useDispatch()
+  const [searchParams, setSearchParams] = useSearchParams()
+    
+  useEffect(() => { 
+    let params: string | null = null
+ 
+    if (window.location.search.includes('gender')) {
+        params = window.location.search
+        console.log(params)
+      }
+    if (window.location.search.includes('category')) {
+        params = window.location.search
+        console.log(params)
+      }
+  
+    const getData = (p: string | null ) => {
+      dispatch(fetchProducts(p))
+    }
+    getData(params)
+  }, [dispatch, searchParams])
 
-  const q = window.location.search
-  
-  useEffect(() => {
-    dispatch(fetchProducts(q))
-  }, [dispatch, q])
-  
   return (
     <section className="c-section-wrapin">
       <div className="p-grid__row">
