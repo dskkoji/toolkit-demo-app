@@ -11,9 +11,11 @@ const theme = createTheme()
 const OrderHistory: React.FC = () => {
   const orders = useAppSelector((state: RootState) => state.user.orders)
   const dispatch: AppDispatch = useAppDispatch()
+  // const user = useAppSelector((state: RootState) => state.user.selectedUser)
   const uid = useAppSelector((state: RootState) => state.user.userId) 
 
   useEffect(() => {
+    // const uid = user.uid
     const getData = (id: string) => {
       dispatch(fetchOrderHistory(id))
     }

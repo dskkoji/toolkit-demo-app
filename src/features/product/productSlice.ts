@@ -81,7 +81,6 @@ export const fetchProducts = createAsyncThunk('product/getAllProducts', async (p
   const productNumber = allProducts.length
   const passData = { allProducts, productNumber }
   return passData
-
 })
 
 export const editProduct = async (submitData: {

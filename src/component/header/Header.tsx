@@ -6,16 +6,14 @@ import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import HeaderMenu from "./HeaderMenu";
 import ClosableDrawer from "./ClosableDrawer"
-import { fetchUsers } from '../../features/user/userSlice'
-import { AppDispatch } from '../../app/store'
-import { useDispatch } from 'react-redux'
+
 import { useAppSelector } from '../../app/hooks'
 import { RootState } from '../../app/store'
+
 
 const Header = () => {
   const navigate = useNavigate();
   const [sideBarOpen, setSideBarOpen] = useState(false);
-  const dispatch: AppDispatch = useDispatch()
   const user = useAppSelector((state: RootState) => state.user.selectedUser)
   
   const handleDrawerToggle = useCallback(
@@ -30,13 +28,6 @@ const Header = () => {
     },
     [setSideBarOpen]
   );
-
-  useEffect(() => {
-    const getData = () => {
-      dispatch(fetchUsers())
-    }
-    getData()
-  }, [])
 
   return (
     <Box sx={{ flexGrow: 1 }}>

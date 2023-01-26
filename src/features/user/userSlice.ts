@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { db } from '../../firebase/index'
-import { getDocs, collection, query, orderBy, doc, setDoc, Timestamp, writeBatch, getDoc, DocumentData } from 'firebase/firestore'
+import { getDocs, collection, query, orderBy, doc, setDoc, Timestamp, writeBatch, getDoc, DocumentData, where } from 'firebase/firestore'
 import { RootState } from '../../app/store'
 
 interface UserState {
@@ -84,6 +84,35 @@ export const fetchOrderHistory = createAsyncThunk('user/getAllOrders', async (ui
   const orderNumber = allOrderHistory.length
   const passData = { allOrderHistory, orderNumber }
   return passData
+})
+
+export const fetchUserId  = createAsyncThunk('user/getUserId', async () => {
+  const q = 
+    query(
+      collection(db, 'users'), 
+      where('isSignedIn', '==', true)
+    )
+  const res = await getDocs(q)
+  const userId = res.docs.map((doc) => ({
+    userId: doc.data().uid
+  }))
+  return userId[0]
+})
+export const fetchSelectedUser = createAsyncThunk('user/getSelectedUser', async () => {
+  const q = 
+    query(
+      collection(db, 'users'), 
+      where('isSignedIn', '==', true)
+    )
+  const res = await getDocs(q)
+  const allUsers = res.docs.map((doc) => ({
+    uid: doc.data().uid,
+    username: doc.data().username,
+    // email: doc.data().email
+    isSignedIn: doc.data().isSignedIn
+  }))
+   
+  return allUsers[0]
 })
 
 export const fetchProductsInCart = createAsyncThunk('user/getAllProductsInCart', async (arg: string) => {
@@ -213,6 +242,7 @@ export const userSlice = createSlice({
   reducers: {
     signIn: (state, action) => {
       state.selectedUser = ({...action.payload})
+      state.userId = action.payload.uid
     },
     setUserId: (state, action) => {
       state.userId = action.payload
@@ -222,9 +252,6 @@ export const userSlice = createSlice({
       state.selectedUser = { uid: '', username: '', isSignedIn: false }
       state.userId = ''
     },
-    fetchCart: (state, action) => {
-      state.cart = ({...action.payload})
-    }
   },
   extraReducers: (builder) => {
       builder
@@ -238,9 +265,15 @@ export const userSlice = createSlice({
       .addCase(fetchProductsInCart.fulfilled, (state, action) => {
         state.cart = action.payload.allProductsInCart
       })
+      .addCase(fetchUserId.fulfilled, (state, action) => {
+        state.userId = action.payload.userId
+      })
+      .addCase(fetchSelectedUser.fulfilled, (state, action) => {
+        state.selectedUser = action.payload
+      })
   }
 })
 
-export const { signIn, signOutUser, fetchCart, setUserId } = userSlice.actions
+export const { signIn, signOutUser, setUserId } = userSlice.actions
 
 export default userSlice.reducer

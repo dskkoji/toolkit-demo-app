@@ -21,11 +21,11 @@ const CartList: React.FC = () => {
   const productsInCart: ProductsInCart = useAppSelector((state: RootState) => state.user.cart)
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  // const user = useAppSelector((state: RootState) => state.user.selectedUser)
-  const uid  = useAppSelector((state: RootState) => state.user.userId)
+  const user = useAppSelector((state: RootState) => state.user.selectedUser)
+  // const uid  = useAppSelector((state: RootState) => state.user.userId)
   
   useEffect(() => {
-    // const uid = user.uid
+    const uid = user.uid
     const getData = (id: string) => {
       dispatch(fetchProductsInCart(id))
     }

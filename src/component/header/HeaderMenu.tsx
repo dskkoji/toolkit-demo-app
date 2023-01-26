@@ -8,7 +8,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { onSnapshot, collection, } from 'firebase/firestore'
 import { db } from '../../firebase/index'
-import { fetchProductsInCart, fetchCart } from '../../features/user/userSlice'
+import { fetchProductsInCart } from '../../features/user/userSlice'
 import { RootState } from '../../app/store'
 import { useAuthState } from '../../app/hooks'
 

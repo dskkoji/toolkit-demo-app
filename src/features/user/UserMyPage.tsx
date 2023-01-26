@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import Button from '@mui/material/Button'
 import { RootState } from '../../app/store'
-import TextDetail from '../../component/UIkit/TextDetail'
 import image from "../..//assets/img/icons/b5ccef43e09175bb07cb7c6741af2724_400x400.jpeg";
 
 
@@ -27,9 +26,13 @@ const UserMyPage: React.FC = () => {
                 }}
             />
         </div>
-       
-      <TextDetail label={"ユーザー名:"} value={user.username} />
-      <TextDetail label={"ユーザーID:"} value={user.uid} />
+       <p>
+        ユーザー名:  {user.username}
+       </p>
+       <p>
+        ユーザーID: {user.uid}
+       </p>
+      
         <div className="module-spacer--small" />
           <div className="center">
             <Button 
