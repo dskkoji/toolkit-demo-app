@@ -7,7 +7,7 @@ interface UserState {
   users: { 
     uid: string; 
     username: string; 
-    email: string; 
+    email: string;
     isSignedIn: boolean; 
   }[];
   selectedUser: { uid: string; username: string; isSignedIn: boolean; },

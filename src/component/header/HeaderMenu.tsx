@@ -87,13 +87,14 @@ const HeaderMenu: React.FC<Props> = (props) => {
   return (
     <>
       <IconButton onClick={() => navigate('/user/cart')} > 
-        {/* <Badge badgeContent={1} color="secondary"> */}
         <Badge badgeContent={productsInCart.length} color="secondary">
           <ShoppingCartIcon />
         </Badge>
       </IconButton>
       <IconButton onClick={() => navigate('/user/favorites')}>
-        <FavoriteBorderIcon />
+        <Badge badgeContent={favoriteList.length} color="secondary">
+          <FavoriteBorderIcon />
+        </Badge>
       </IconButton>
       <IconButton 
         aria-label="Menu Items"

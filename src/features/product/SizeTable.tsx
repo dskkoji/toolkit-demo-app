@@ -10,10 +10,8 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 
 type PropsType = {
   sizes: {size: string; quantity: number;}[];
-  // size: string;
-  // quantity: number;
-  addProduct: any;
-  addFavorite: any;
+  addProduct: (selectedSize: string) => void;
+  addFavorite: (selectedSize: string) => void;
 }
 
 const SizeTable: React.FC<PropsType> = (props) => {
@@ -42,7 +40,6 @@ const SizeTable: React.FC<PropsType> = (props) => {
                 <TableCell sx={{ p: 0, height: 48, width: 48 }}>
                   <IconButton 
                     sx={{ p: 0, height: 48, width: 48 }}
-                    // onClick={() => console.log('added favorite!')}
                     onClick={() => props.addFavorite(item.size)}
                     >
                       <FavoriteBorderIcon />

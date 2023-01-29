@@ -29,7 +29,7 @@ const FavoriteList: React.FC = () => {
       dispatch(fetchFavorite(id))
     }
     getData(uid)
-  }, [])
+  }, [dispatch, user.uid])
 
   return (
     <section className="c-section-wrapin">

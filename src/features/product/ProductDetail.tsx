@@ -4,15 +4,12 @@ import { db } from '../../firebase/index'
 import { getDoc, Timestamp, doc } from 'firebase/firestore'
 import HTMLReactParser from 'html-react-parser'
 import Box from '@mui/material/Box'
-// import { useAppSelector } from '../../app/hooks'
 import { useNavigate } from 'react-router-dom'
 import { addProductToCart, addFavoriteToList } from '../../features/user/userSlice'
 import ImageSwiper from '../../features/product/ImageSwiper'
- import { useDispatch, useSelector } from 'react-redux'
+ import { useSelector } from 'react-redux'
 import SizeTable from '../../features/product/SizeTable'
-import { AppDispatch } from '../../app/store'
 import { RootState } from '../../app/store'
-
 
 const theme = createTheme()
 
@@ -20,7 +17,6 @@ const ProductDetail: React.FC = () => {
   const [product, setProduct] = useState<any>(null)
   const id = window.location.pathname.split('/product/')[1]
   const navigate = useNavigate()
-  const dispatch: AppDispatch = useDispatch()
   const user = useSelector((state: RootState) => state.user.selectedUser)
   console.log(user.uid)
 
@@ -31,7 +27,7 @@ const ProductDetail: React.FC = () => {
           console.log(data)
           setProduct(data)
         })
-  }, [])
+  }, [id])
 
   const addProduct = useCallback((selectedSize: string) => {
    const dateTime = Timestamp.fromDate(new Date())

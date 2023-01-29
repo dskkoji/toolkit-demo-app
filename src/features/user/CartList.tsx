@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import List from '@mui/material/List'
 import { RootState } from '../../app/store'
 import Button from '@mui/material/Button'
@@ -22,7 +22,6 @@ const CartList: React.FC = () => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const user = useAppSelector((state: RootState) => state.user.selectedUser)
-  // const uid  = useAppSelector((state: RootState) => state.user.userId)
   
   useEffect(() => {
     const uid = user.uid
@@ -30,7 +29,7 @@ const CartList: React.FC = () => {
       dispatch(fetchProductsInCart(id))
     }
     getData(uid) 
-   }, [])
+   }, [dispatch, user.uid])
 
   return (
     <section className="c-section-wrapin">
