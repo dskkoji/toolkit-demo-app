@@ -37,11 +37,11 @@ const CartList: React.FC = () => {
       <h2 className="u-text__headline">ショッピングカート</h2>
       <List sx={{ m: '0 auto', maxWidth: 512, width: '100%' }}>
         {productsInCart.length > 0 && (
-          productsInCart.map((product => 
+          productsInCart.map((product) => 
           <CartListItem 
             product={product} key={product.cartId}  
           />
-          ))
+          )
         )}
       </List>
       <div className="module-spacer--small" />

@@ -13,6 +13,7 @@ type PropsType = {
   // size: string;
   // quantity: number;
   addProduct: any;
+  addFavorite: any;
 }
 
 const SizeTable: React.FC<PropsType> = (props) => {
@@ -39,7 +40,11 @@ const SizeTable: React.FC<PropsType> = (props) => {
                     )}
                 </TableCell>
                 <TableCell sx={{ p: 0, height: 48, width: 48 }}>
-                  <IconButton sx={{ p: 0, height: 48, width: 48 }}>
+                  <IconButton 
+                    sx={{ p: 0, height: 48, width: 48 }}
+                    // onClick={() => console.log('added favorite!')}
+                    onClick={() => props.addFavorite(item.size)}
+                    >
                       <FavoriteBorderIcon />
                   </IconButton>
                 </TableCell>

@@ -27,7 +27,7 @@ const UserMyPage: React.FC = () => {
             />
         </div>
        <p>
-        ユーザー名:  {user.username}
+        ユーザー名: {user.username}
        </p>
        <p>
         ユーザーID: {user.uid}

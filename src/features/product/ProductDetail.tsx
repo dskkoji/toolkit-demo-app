@@ -6,7 +6,7 @@ import HTMLReactParser from 'html-react-parser'
 import Box from '@mui/material/Box'
 // import { useAppSelector } from '../../app/hooks'
 import { useNavigate } from 'react-router-dom'
-import { addProductToCart } from '../../features/user/userSlice'
+import { addProductToCart, addFavoriteToList } from '../../features/user/userSlice'
 import ImageSwiper from '../../features/product/ImageSwiper'
  import { useDispatch, useSelector } from 'react-redux'
 import SizeTable from '../../features/product/SizeTable'
@@ -48,6 +48,22 @@ const ProductDetail: React.FC = () => {
     size: selectedSize,
    })
    navigate('/user/cart')
+  }, [product])
+
+  const addFavorite = useCallback((selectedSize: string) => {
+    const dateTime = Timestamp.fromDate(new Date())
+    addFavoriteToList({
+      uid: user.uid,
+      added_at: dateTime,
+      description: product.description,
+      gender: product.gender,
+      images: product.images,
+      productName: product.productName,
+      productId: product.productId,
+      size: selectedSize,
+      price: product.price,
+    })
+    navigate('/user/favorites')
   }, [product])
 
   const returnCodeToBr = (text: string) => {
@@ -93,7 +109,7 @@ const ProductDetail: React.FC = () => {
               <h2 className="u-text__headline">{product.productName}</h2>
               <Box component="p" sx={{ fontSize: 36 }}>¥{(product.price).toLocaleString()}</Box>
               <div className="module-spacer--small" />
-              <SizeTable addProduct={addProduct} sizes={product.sizes} />
+              <SizeTable addProduct={addProduct} sizes={product.sizes} addFavorite={addFavorite}  />
               <div className="module-spacer--small" />
               <p>{returnCodeToBr(product.description)}</p>
             </Box>

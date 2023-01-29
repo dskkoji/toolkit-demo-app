@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { db } from '../../firebase/index'
 import { getDocs, collection, query, orderBy, doc, setDoc, Timestamp, writeBatch, getDoc, DocumentData, where } from 'firebase/firestore'
-import { RootState } from '../../app/store'
 
 interface UserState {
   idCount: number;
@@ -13,7 +12,6 @@ interface UserState {
   }[];
   selectedUser: { uid: string; username: string; isSignedIn: boolean; },
   cart: {
-    // uid: string;
     cartId: string;
     productId: string;
     productName: string;
@@ -30,6 +28,15 @@ interface UserState {
     updated_at: Timestamp,
     shippingDate: Timestamp,
   }[],
+  favorite: {
+    favoriteId: string;
+    productId: string,
+    productName: string;
+    size: string;
+    gender: string;
+    price: number;
+    images: any[]
+  }[],
   userId: string;
 }
 
@@ -39,6 +46,7 @@ const initialState: UserState = {
   selectedUser: { uid: '', username: '', isSignedIn: false },
   cart: [],
   orders: [],
+  favorite: [],
   userId: ''
 }
 
@@ -56,15 +64,13 @@ export const fetchUsers = createAsyncThunk('user/getAllUsers', async () => {
     isSignedIn: doc.data().isSignedIn,
     cart: doc.data().cart,
     orders: doc.data().orders,
+    favorite: doc.data().favorite,
   }))
 
   const userNumber =  allUsers.length
   const passData = { allUsers, userNumber }
   return passData
 })
-
-
-// export const selectSelectedUser = (state: RootState) => state.user.selectedUser
 
 export const fetchOrderHistory = createAsyncThunk('user/getAllOrders', async (uid:string) => {
   const res = await getDocs(
@@ -115,6 +121,29 @@ export const fetchSelectedUser = createAsyncThunk('user/getSelectedUser', async 
   return allUsers[0]
 })
 
+export const fetchFavorite  = createAsyncThunk('user/getFavorite', async(arg: string) => {
+  const res = await getDocs(
+    query(
+      collection(db, 'users', arg, 'favorite'),
+      orderBy('added_at', 'desc')
+    )
+  )
+  const allFavorite = res.docs.map((doc) => ({
+    uid: doc.data().uid,
+    favoriteId: doc.data().favoriteId,
+    productId: doc.data().productId,
+    productName: doc.data().productName,
+    gender: doc.data().gender,
+    price: doc.data().price,
+    images: doc.data().images,
+    size: doc.data().size,
+  }))
+
+  const favoriteNumber = allFavorite.length
+  const passData = { allFavorite, favoriteNumber }
+  return passData
+})
+
 export const fetchProductsInCart = createAsyncThunk('user/getAllProductsInCart', async (arg: string) => {
   const res = await getDocs(
     query(
@@ -158,6 +187,27 @@ export const addProductToCart = async (addedProduct: {
   } catch(err) {
     console.log('Error document writing:', err)
   }
+}
+
+export const addFavoriteToList = async (addedProduct: {
+  uid: string;
+  added_at: Timestamp;
+  description: string;
+  productId: string;
+  productName: string;
+  gender: string;
+  price: number;
+  images: [];
+  size: string;
+}): Promise<void> => {
+  try {
+    const favRef = doc(collection(db, 'users', addedProduct.uid, 'favorite'))
+    await setDoc(favRef, {
+      ...addedProduct, favoriteId: favRef.id },
+       { merge: true })
+  } catch(err) {
+    console.log('Error document writing:', err)
+    }
 }
 
 export const orderProduct = async (
@@ -270,6 +320,9 @@ export const userSlice = createSlice({
       })
       .addCase(fetchSelectedUser.fulfilled, (state, action) => {
         state.selectedUser = action.payload
+      })
+      .addCase(fetchFavorite.fulfilled, (state ,action) => {
+        state.favorite = action.payload.allFavorite
       })
   }
 })

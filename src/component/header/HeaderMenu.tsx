@@ -8,7 +8,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { onSnapshot, collection, } from 'firebase/firestore'
 import { db } from '../../firebase/index'
-import { fetchProductsInCart } from '../../features/user/userSlice'
+import { fetchProductsInCart, fetchFavorite } from '../../features/user/userSlice'
 import { RootState } from '../../app/store'
 import { useAuthState } from '../../app/hooks'
 
@@ -19,10 +19,41 @@ type Props = {
 const HeaderMenu: React.FC<Props> = (props) => {
   const [user, loading] = useAuthState()  
   let productsInCart = useAppSelector((state: RootState) => state.user.cart)
+  let favoriteList = useAppSelector((state: RootState) => state.user.favorite)
   const { handleDrawerToggle } = props
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   
+  useEffect(() => {
+    if (!user) return 
+    const uid = user.uid
+    const ref = collection(db, 'users', `${uid}`, 'favorite')
+    const unsub = onSnapshot(ref,
+      (snapshots) => {
+        snapshots.docChanges().forEach(change => {
+          const product: any = change.doc.data()
+          const changeType = change.type
+          switch(changeType) {
+            case 'added':
+              favoriteList.push(product)
+              break;
+            case 'modified':
+              const index = favoriteList.findIndex(product => product.favoriteId === change.doc.id)
+              favoriteList[index] = product
+              break;
+            case 'removed':
+              favoriteList = favoriteList.filter(product => product.favoriteId !== change.doc.id)
+              break;
+            default:
+              break;
+          }
+        })
+        dispatch(fetchFavorite(uid))
+      }
+      )
+      return () => unsub()
+  }, [!!user, loading])
+
   useEffect(() => {
     if (!user) return 
     const uid = user.uid
@@ -61,7 +92,7 @@ const HeaderMenu: React.FC<Props> = (props) => {
           <ShoppingCartIcon />
         </Badge>
       </IconButton>
-      <IconButton>
+      <IconButton onClick={() => navigate('/user/favorites')}>
         <FavoriteBorderIcon />
       </IconButton>
       <IconButton 

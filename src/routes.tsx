@@ -9,7 +9,7 @@ import OrderHistory from './features/user/OrderHistory'
 import OrderComplete from './features/user/OrderComplete'
 import UserAuth from './features/user/UserAuth'
 import CartList from './features/user/CartList'
-
+import FavoriteList from './features/user/FavoriteList'
 
 
 export const routes = [
@@ -33,7 +33,7 @@ export const routes = [
         element: <UserMyPage />
       },
       {
-        path: 'user/cart',
+        path: '/user/cart',
         element: <CartList />
       },
       {
@@ -53,8 +53,12 @@ export const routes = [
         element: <ProductEdit />
       },
       {
-        path: 'order/complete',
+        path: '/order/complete',
         element: <OrderComplete />
+      },
+      {
+        path: '/user/favorites',
+        element: <FavoriteList />
       }
     ]
   }
