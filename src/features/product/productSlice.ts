@@ -62,6 +62,10 @@ export const fetchProducts = createAsyncThunk('product/getAllProducts', async (p
     keyword = params.split('?category=')[1]
     queryOption.push(where('category', '==', keyword))
   }
+  if (params?.includes('productName')) {
+    keyword = params?.split('?productName')[1]
+    queryOption.push(where('productName', '==', keyword))
+  }
 
   const q = query(productsRef, ...queryOption)
 

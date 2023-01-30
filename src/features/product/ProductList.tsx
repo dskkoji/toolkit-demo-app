@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { useAppSelector } from '../../app/hooks'
 import { RootState } from '../../app/store'
 import { useDispatch } from 'react-redux'
 import { fetchProducts } from '../../features/product/productSlice'

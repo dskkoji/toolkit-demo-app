@@ -301,6 +301,8 @@ export const userSlice = createSlice({
       // state.users = initialState.users
       state.selectedUser = { uid: '', username: '', isSignedIn: false }
       state.userId = ''
+      state.favorite = []
+      state.cart = []
     },
   },
   extraReducers: (builder) => {

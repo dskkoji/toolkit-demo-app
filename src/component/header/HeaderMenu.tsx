@@ -49,15 +49,13 @@ const HeaderMenu: React.FC<Props> = (props) => {
           }
         })
         dispatch(fetchFavorite(uid))
-      }
-      )
+      })
       return () => unsub()
   }, [!!user, loading])
 
   useEffect(() => {
     if (!user) return 
     const uid = user.uid
-    console.log(uid)
     const ref = collection(db, 'users', `${uid}`, 'cart')
     const unsub = onSnapshot(ref, 
       (snapshots) => {

@@ -34,7 +34,7 @@ const FavoriteList: React.FC = () => {
   return (
     <section className="c-section-wrapin">
       <h2 className="u-text__headline">お気に入りリスト</h2>
-      <List sx={{ m: '0 auto', maxWidth: 512, width: '100%' }}>
+      <List sx={{ m: '0 auto', maxWidth: 660, width: '100%' }}>
         {flist.length > 0 && (
             flist.map((product) => 
             <FavoriteItem 

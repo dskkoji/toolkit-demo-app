@@ -10,7 +10,7 @@ import OrderComplete from './features/user/OrderComplete'
 import UserAuth from './features/user/UserAuth'
 import CartList from './features/user/CartList'
 import FavoriteList from './features/user/FavoriteList'
-
+import SearchKeyword from './features/product/SearchKeyword'
 
 export const routes = [
   {
@@ -59,6 +59,10 @@ export const routes = [
       {
         path: '/user/favorites',
         element: <FavoriteList />
+      },
+      {
+        path: '/search',
+        element: <SearchKeyword />
       }
     ]
   }

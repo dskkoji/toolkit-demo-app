@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import logo from "../../assets/img/icons/logo.png";
@@ -6,10 +6,8 @@ import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import HeaderMenu from "./HeaderMenu";
 import ClosableDrawer from "./ClosableDrawer"
-
 import { useAppSelector } from '../../app/hooks'
 import { RootState } from '../../app/store'
-
 
 const Header = () => {
   const navigate = useNavigate();

@@ -14,10 +14,10 @@ import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth'
-import { getDoc, collection, doc, Timestamp, setDoc, updateDoc } from 'firebase/firestore'
+import { getDoc, doc, Timestamp, setDoc, updateDoc } from 'firebase/firestore'
 import { db } from '../../firebase/index'
 import { useAppDispatch } from '../../app/hooks'
-import { signIn, setUserId, fetchProductsInCart } from '../user/userSlice'
+import { signIn, setUserId, fetchProductsInCart, fetchFavorite } from '../user/userSlice'
 
 const Copyright = () => {
   return (
@@ -71,7 +71,8 @@ const UserAuth:React.FC = () => {
                 isSignedIn: true,
               }))
               dispatch(setUserId(userId))
-              dispatch(fetchProductsInCart(userId)) 
+              dispatch(fetchProductsInCart(userId))
+              dispatch(fetchFavorite(userId)) 
             })
           })
         navigate('/')

@@ -10,6 +10,8 @@ import { db } from '../../firebase/index'
 import Box from '@mui/material/Box'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../app/store'
+import Button from '@mui/material/Button'
+import { useNavigate } from 'react-router-dom'
   
 type Props = {
   product: {
@@ -26,6 +28,7 @@ const FavoriteItem: React.FC<Props> = (props: Props) => {
   const image = props.product.images[0].path
   const price = props.product.price.toLocaleString()
   const user = useSelector((state: RootState) => state.user.selectedUser)
+  const navigate = useNavigate()
 
   const removeFavoriteFromList = (favoriteId: string) => {
     deleteDoc(doc(db, 'users', `${user.uid}`, 'favorite', `${favoriteId}`))
@@ -41,6 +44,14 @@ const FavoriteItem: React.FC<Props> = (props: Props) => {
           <ListItemText primary={props.product.productName} secondary={"サイズ: " + props.product.size} />
           <ListItemText primary={"¥" + price} />
         </Box>
+        <Button 
+            color="primary"
+            variant="outlined"
+            type="button"
+            onClick={() => navigate(`/product/${props.product.productId}`)}
+          >
+            詳細を見る
+          </Button>    
         <IconButton onClick={() => removeFavoriteFromList(props.product.favoriteId)}>
           <DeleteIcon />
         </IconButton>

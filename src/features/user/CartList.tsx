@@ -34,7 +34,7 @@ const CartList: React.FC = () => {
   return (
     <section className="c-section-wrapin">
       <h2 className="u-text__headline">ショッピングカート</h2>
-      <List sx={{ m: '0 auto', maxWidth: 512, width: '100%' }}>
+      <List sx={{ m: '0 auto', maxWidth: 660, width: '100%' }}>
         {productsInCart.length > 0 && (
           productsInCart.map((product) => 
           <CartListItem 

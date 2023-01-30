@@ -6,9 +6,10 @@ import { useAppDispatch } from './app/hooks'
 import { onAuthStateChanged } from 'firebase/auth'
 import { useNavigate } from 'react-router-dom'
 import { 
-  // fetchUsers, 
   fetchUserId, 
-  fetchSelectedUser 
+  fetchSelectedUser,
+  // fetchFavorite,
+  // fetchProductsInCart 
 } from './features/user/userSlice'
 import { auth } from './firebase/index'
 
@@ -25,7 +26,6 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const getData = () => {
-      // dispatch(fetchUsers())
       dispatch(fetchUserId())
       dispatch(fetchSelectedUser())
     }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
 import List from '@mui/material/List'
@@ -18,20 +18,17 @@ import { signOut } from 'firebase/auth'
 import Box from '@mui/material/Box'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { useForm } from 'react-hook-form'
-import { query, getDocs, orderBy, collection, getDoc, doc, updateDoc,  } from 'firebase/firestore'
+import { query, getDocs, orderBy, collection, doc, updateDoc,  } from 'firebase/firestore'
 import { RootState } from '../../app/store'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import { useAppDispatch } from '../../app/hooks'
 import { signOutUser } from '../../features/user/userSlice'
-// import { useSelector } from 'react-redux'
-// import { RootState } from '../../app/store'
-import { fetchUsers } from '../../features/user/userSlice'
+
 
 type Props = {
   open: boolean;
   onClose: any;
-  // uid?: string;
 }
 
 const theme = createTheme()
@@ -41,7 +38,6 @@ const ClosableDrawer: React.FC<Props> = (props) => {
   const { register } = useForm()
   const dispatch = useAppDispatch()
   const [keyword, setKeyword] = useState('')
-  const [userId, setUserId] = useState<any>('')
 
   const selectMenu = (event: any, path: string) => {
     navigate(path)
