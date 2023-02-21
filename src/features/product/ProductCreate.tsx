@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Button from '@mui/material/Button'
 import SelectBox from '../../component/UIkit/SelectBox'
 import { useDispatch } from 'react-redux'
@@ -10,7 +10,7 @@ import SetSizeArea from '../../features/product/SetSizeArea'
 import { db } from '../../firebase/index'
 import { saveProduct, fetchProducts } from '../product/productSlice'
 import { useNavigate } from 'react-router-dom'
-import { collection, Timestamp, setDoc, doc } from 'firebase/firestore'
+import { collection, Timestamp, setDoc, doc, query, orderBy, getDocs } from 'firebase/firestore'
 
 type SubmitData = {
   productName: string;
@@ -28,19 +28,32 @@ const ProductCreate: React.FC = () => {
   const { register, handleSubmit } = useForm<SubmitData>()
   const [gender, setGender] = useState('')
   const [category, setCategory] = useState('')
+  const [categories, setCategories] = useState<any[]>([])
   const [images, setImages] = useState<any>([])
   const [sizes, setSizes] = useState<Size[]>([])
 
 
   const genders = [
+    { id: 'all', name: 'すべて' },
     { id: 'male', name: 'メンズ' },
-    { id: 'female', name: 'レディス' }
+    { id: 'female', name: 'レディス' },
   ]
 
-  const categories = [
-    { id: 'shirts', name: 'シャツ' },
-    { id: 'pants', name: 'パンツ' }
-  ]
+  useEffect(() => {
+    const q = query(collection(db, 'categories'), orderBy('order', 'asc'))
+    getDocs(q)
+      .then((querySnapshot) => {
+        const list: any[] = []
+        querySnapshot.forEach((snapshot) => {
+          const data = snapshot.data()
+          list.push({
+            id: data.id,
+            name: data.name
+          })
+        })
+        setCategories(list)
+      })
+  }, [])
 
   const onSubmit = async (data: SubmitData) => {
     const sendData = {

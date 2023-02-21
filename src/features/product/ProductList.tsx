@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../app/store'
 import { useDispatch } from 'react-redux'
@@ -6,6 +6,7 @@ import { fetchProducts } from '../../features/product/productSlice'
 import ProductCard from './ProductCard'
 import { AppDispatch } from '../../app/store'
 import { useSearchParams } from 'react-router-dom'
+import escapeStringRegexp from 'escape-string-regexp'
 
 type Products = {
   productId: string; 
@@ -23,7 +24,8 @@ const ProductList: React.FC = () => {
   const products: Products = useSelector((state: RootState) => state.product.products)
   const dispatch: AppDispatch = useDispatch()
   const [searchParams, setSearchParams] = useSearchParams()
-    
+
+  
   useEffect(() => { 
     let params: string | null = null
  
@@ -35,6 +37,11 @@ const ProductList: React.FC = () => {
         params = window.location.search
         console.log(params)
       }
+    if (window.location.search.includes('keyword')) {
+      params = window.location.search
+      console.log(params)
+    }
+   
   
     const getData = (p: string | null ) => {
       dispatch(fetchProducts(p))

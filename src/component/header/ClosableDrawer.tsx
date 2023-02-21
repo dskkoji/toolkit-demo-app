@@ -17,14 +17,15 @@ import { db, auth } from '../../firebase/index'
 import { signOut } from 'firebase/auth'
 import Box from '@mui/material/Box'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
-import { useForm } from 'react-hook-form'
-import { query, getDocs, orderBy, collection, doc, updateDoc,  } from 'firebase/firestore'
+// import { useForm } from 'react-hook-form'
+import { query, getDocs, orderBy, collection, doc, updateDoc, where } from 'firebase/firestore'
 import { RootState } from '../../app/store'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import { useAppDispatch } from '../../app/hooks'
 import { signOutUser } from '../../features/user/userSlice'
-
+// import escapeStringRegexp from 'escape-string-regexp'
+// import { ngram } from '../../features/product/productSlice'
 
 type Props = {
   open: boolean;
@@ -35,7 +36,7 @@ const theme = createTheme()
 
 const ClosableDrawer: React.FC<Props> = (props) => {
   const navigate = useNavigate()
-  const { register } = useForm()
+  // const { register } = useForm()
   const dispatch = useAppDispatch()
   const [keyword, setKeyword] = useState('')
 
@@ -43,6 +44,10 @@ const ClosableDrawer: React.FC<Props> = (props) => {
     navigate(path)
     props.onClose(event, false)
   }
+
+  const onInput = (e: React.FormEvent<HTMLInputElement>) => {
+    setKeyword(e.currentTarget.value)
+  } 
   
   const [filters, setFilters] = useState([
     { func: selectMenu, label: "すべて", id: "all", value: "/" },
@@ -89,6 +94,18 @@ const ClosableDrawer: React.FC<Props> = (props) => {
     }
   }
 
+  // const products = useSelector((state: RootState) => state.product.products)
+
+  // let list = products.map((item) => item.productName)
+
+  // const filteredList = list.filter((item) => {
+  //   const escapedText = escapeStringRegexp(keyword.toLowerCase())
+  //   return new RegExp(escapedText).test(item.toLowerCase())
+  // })
+
+  // console.log(filteredList)
+
+
    return (
    <ThemeProvider theme={theme}>
     <Box
@@ -122,11 +139,16 @@ const ClosableDrawer: React.FC<Props> = (props) => {
               type="text"
               label={"キーワードを入力"}
               id="keyword"
-              {...register('keyword', {
-                required: false
-              })}
+              // {...register('keyword', {
+              //   required: false
+              // })}
               value={keyword}
-              onChange={(e: any) => setKeyword(e.target.value)}
+             
+              onInput={onInput}
+              onChange={(e: any) => {
+                setKeyword(e.target.value)
+                navigate(`/?keyword=${e.target.value}`)
+              }}
             />
             <IconButton>
               <SearchIcon />

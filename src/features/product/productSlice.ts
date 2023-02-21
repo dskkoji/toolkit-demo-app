@@ -1,8 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { collection, getDocs, query, orderBy, setDoc, doc, Timestamp, deleteDoc, where } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, setDoc, doc, Timestamp, deleteDoc, where, startAt, endAt, limit } from 'firebase/firestore';
 import { db } from '../../firebase/index'
 import { AppThunk, RootState } from '../../app/store'
 import { createSelector } from 'reselect'
+import { map } from '@firebase/util';
+// import escapeStringRegexp from 'escape-string-regexp'
 
 interface ProductState {
   idCount: number;
@@ -47,6 +49,16 @@ const initialState: ProductState = {
    },
 }
 
+export const ngram = (words: any, n: number) => {
+  let i
+  let grams = []
+  for (i = 0; i <= words.length -n; i++) {
+    grams.push(words.substr(i, n).toLowerCase())
+  }
+  return grams
+}
+
+
 export const fetchProducts = createAsyncThunk('product/getAllProducts', async (params: string | null) => {
   const productsRef = collection(db, 'products')
   let queryOption = [
@@ -62,13 +74,21 @@ export const fetchProducts = createAsyncThunk('product/getAllProducts', async (p
     keyword = params.split('?category=')[1]
     queryOption.push(where('category', '==', keyword))
   }
-  if (params?.includes('productName')) {
-    keyword = params?.split('?productName')[1]
-    queryOption.push(where('productName', '==', keyword))
+
+  if (params?.includes('keyword')) {
+    keyword = params.split('?keyword=')[1]
+    let newSearchGrams = ngram(keyword, 2)
+    newSearchGrams = newSearchGrams.filter(searchGram => {
+      return searchGram.length > 1
+    })
+    // console.log(newSearchGrams)
+    queryOption.push(limit(30))
+    newSearchGrams.forEach((searchGram) => {
+      queryOption.push(where(`word.${searchGram}`, '==', true))
+    })
   }
 
   const q = query(productsRef, ...queryOption)
-
   const res = await getDocs(q)
   const allProducts = res.docs.map((doc) => ({
     productId: doc.id,
@@ -108,6 +128,13 @@ export const editProduct = async (submitData: {
   })
   const dateTime = Timestamp.fromDate(new Date())
   try {
+    const wordArr = ngram(productName, 2)
+    let wMap = new Map()
+    for (let i = 0; i < wordArr.length; i++) {
+      wMap.set(wordArr[i], true)
+    }
+    const wObj = Object.fromEntries(wMap)
+    console.log(wObj)
     await setDoc(doc(db, 'products', productId), { 
       productId: productId,
       productName: productName,
@@ -118,6 +145,7 @@ export const editProduct = async (submitData: {
       sizes: parseSizes,
       images: images,
       updated_at: dateTime,
+      word: wObj
      }, { merge: true })
   } catch(err) {
     console.log('Error updating document:', err)
@@ -190,6 +218,14 @@ export const saveProduct = async (submitData: {
   })
   try {
     const ref = doc(collection(db, 'products'))
+    const wordArr = ngram(productName, 2)
+    let wmap = new Map()
+    for (let i = 0; i < wordArr.length; i++) {
+      wmap.set(wordArr[i], true)
+    }
+    const wObj = Object.fromEntries(wmap)
+    console.log(wObj)
+    
      await setDoc(ref, {
       productId: ref.id,
       productName: productName,
@@ -199,7 +235,8 @@ export const saveProduct = async (submitData: {
       category: category,
       sizes: parseSizes,
       images: images,
-      created_at: dateTime
+      created_at: dateTime,
+      word: wObj
     })
   } catch(err: any) {
     alert(err.message)
