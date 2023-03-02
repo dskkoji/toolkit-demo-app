@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../app/store'
 import { useDispatch } from 'react-redux'
@@ -6,7 +6,6 @@ import { fetchProducts } from '../../features/product/productSlice'
 import ProductCard from './ProductCard'
 import { AppDispatch } from '../../app/store'
 import { useSearchParams } from 'react-router-dom'
-import escapeStringRegexp from 'escape-string-regexp'
 
 type Products = {
   productId: string; 

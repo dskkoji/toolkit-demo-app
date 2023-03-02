@@ -18,14 +18,10 @@ import { signOut } from 'firebase/auth'
 import Box from '@mui/material/Box'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 // import { useForm } from 'react-hook-form'
-import { query, getDocs, orderBy, collection, doc, updateDoc, where } from 'firebase/firestore'
-import { RootState } from '../../app/store'
-import { useDispatch } from 'react-redux'
-import { useSelector } from 'react-redux'
+import { query, getDocs, orderBy, collection, doc, updateDoc } from 'firebase/firestore'
+
 import { useAppDispatch } from '../../app/hooks'
 import { signOutUser } from '../../features/user/userSlice'
-// import escapeStringRegexp from 'escape-string-regexp'
-// import { ngram } from '../../features/product/productSlice'
 
 type Props = {
   open: boolean;
@@ -54,6 +50,11 @@ const ClosableDrawer: React.FC<Props> = (props) => {
     { func: selectMenu, label: "メンズ", id: "male", value: "/?gender=male" },
     { func: selectMenu, label: "レディス", id: "female", value: "/?gender=female" }
   ])
+
+  const handleSubmit = (event: any, keyword: string) => {
+    navigate(`/?keyword=${keyword}`)
+    props.onClose(event, false)
+  }
 
   const menus = [
     { func: selectMenu, label: "商品登録", icon: <AddCircleIcon /> , id: "register" , value: "/product/create" },
@@ -94,18 +95,6 @@ const ClosableDrawer: React.FC<Props> = (props) => {
     }
   }
 
-  // const products = useSelector((state: RootState) => state.product.products)
-
-  // let list = products.map((item) => item.productName)
-
-  // const filteredList = list.filter((item) => {
-  //   const escapedText = escapeStringRegexp(keyword.toLowerCase())
-  //   return new RegExp(escapedText).test(item.toLowerCase())
-  // })
-
-  // console.log(filteredList)
-
-
    return (
    <ThemeProvider theme={theme}>
     <Box
@@ -128,10 +117,9 @@ const ClosableDrawer: React.FC<Props> = (props) => {
           keepMounted: true,
         }}
       >
-        {/* <div
-          onKeyDown={(e) => props.onClose(e, false)}
-        > */}
-          <Box sx={{ alignItems: 'center', display: 'flex', marginLeft: 4 }}>
+          <Box 
+            sx={{ alignItems: 'center', display: 'flex', marginLeft: 4 }}
+            >
             <TextField 
               fullWidth
               multiline={false}
@@ -147,10 +135,11 @@ const ClosableDrawer: React.FC<Props> = (props) => {
               onInput={onInput}
               onChange={(e: any) => {
                 setKeyword(e.target.value)
-                navigate(`/?keyword=${e.target.value}`)
               }}
             />
-            <IconButton>
+            <IconButton 
+              onClick={(e) => handleSubmit(e, keyword)}
+              >
               <SearchIcon />
             </IconButton>
           </Box>
@@ -189,7 +178,6 @@ const ClosableDrawer: React.FC<Props> = (props) => {
               </ListItem>
             ))}
           </List>
-        {/* </div> */}
       </Drawer>
     </Box>
    </ThemeProvider>
